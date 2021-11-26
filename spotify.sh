@@ -53,8 +53,7 @@ if [ ! -z "$1" ]; then
 			spt pb --shuffle;;
 		repeat)
 			spt pb --repeat;;
-		$(awk "/^-(n{2,}|p{2,})$/" <<<${1}))
-			echo "prout $1"
+		$(awk "/^(n{2,}|p{2,})$/" <<<${1}))
 			spt pb -$1;;
 		n | next)
 			_repeatParam n $2;;
