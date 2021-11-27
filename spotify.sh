@@ -23,10 +23,9 @@ function _CommandHelp() {
 }
 
 function _repeatParam() {
-	param=$1
 	if [ -z "${2//[0-9]}" ]; then
 		result=$(printf "%${2}s" ' ')
-		spt pb "-${result// /$param}"
+		spt pb "-${result// /$1}"
 	else
 		die "Invalid argument for $1"
 	fi
