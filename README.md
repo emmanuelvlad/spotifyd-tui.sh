@@ -3,12 +3,16 @@ Start (and stop) the [spotifyd](https://github.com/Spotifyd/spotifyd) daemon wit
 
 ## First steps
 
+**Clone it in the directory of your choice**  
+You could also just download the .sh file, but you can keep it up to date by doing a `git pull`  
+`gcl https://github.com/emmanuelvlad/spotifyd-tui.sh.git $HOME/Documents/scripts`
+
 **Make the script executable**  
-`chmod +x spotify.sh`
+`chmod +x $HOME/Documents/scripts/spotifyd-tui.sh/spotify.sh`
 
 **Create an alias to the script**  
-In your $HOME/.zshrc or .bashrc  
-`alias sptf=/path/to/spotify.sh`
+Add this in your $HOME/.zshrc or .bashrc  
+`alias sptf=$HOME/Documents/scripts/spotifyd-tui.sh/spotify.sh`
 
 ## Usage
   
@@ -27,5 +31,5 @@ sptf album                  Prints the album url
 sptf link                   Prints the song url  
 sptf now                    Prints the status of the current song  
 sptf stop                   Stops the spotifyd daemon  
-sptf play <uri|name>        Plays from a valid URI or calls `spt` to handle it
+sptf play <uri|name> [opts] Plays from a valid URI or calls `spt` to handle it
 ```

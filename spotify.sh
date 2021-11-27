@@ -59,7 +59,7 @@ if [ ! -z "$1" ]; then
 		play)
 			_getTrackID $2
 			if [ ! -z "$_TRACK_ID" ]; then
-				spt play --uri "spotify:track:${_TRACK_ID}"
+				spt play --uri "spotify:track:${_TRACK_ID}" ${@:3}
 			else
 				spt $@
 			fi;;
