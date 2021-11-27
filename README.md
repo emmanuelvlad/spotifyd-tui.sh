@@ -1,5 +1,5 @@
 Start (and stop) the [spotifyd](https://github.com/Spotifyd/spotifyd) daemon with [spotify-tui](https://github.com/Rigellute/spotify-tui).  
-\+ shortcut commands
+\+ Shortcut commands and handling spotify's URLs for command `play`
 
 ## First steps
 
@@ -27,4 +27,5 @@ sptf album                  Prints the album url
 sptf link                   Prints the song url  
 sptf now                    Prints the status of the current song  
 sptf stop                   Stops the spotifyd daemon  
+sptf play <uri|name>        Plays from a valid URI or calls `spt` to handle it
 ```

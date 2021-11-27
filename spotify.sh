@@ -32,6 +32,10 @@ function _repeatParam() {
 	fi
 }
 
+function _getTrackID() {
+	_TRACK_ID=$(grep -m 1 -oP "track[:|/]\K([a-zA-Z0-9]{22})" <<< $1)
+}
+
 if [ ! -z "$1" ]; then
 	case "$1" in
 		-h | --help | help)
@@ -53,6 +57,13 @@ if [ ! -z "$1" ]; then
 			spt pb --shuffle;;
 		repeat)
 			spt pb --repeat;;
+		play)
+			_getTrackID $2
+			if [ ! -z "$_TRACK_ID" ]; then
+				spt play --uri "spotify:track:${_TRACK_ID}"
+			else
+				spt play $@
+			fi;;
 		$(awk "/^(n{2,}|p{2,})$/" <<<${1}))
 			spt pb -$1;;
 		n | next)
