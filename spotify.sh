@@ -61,7 +61,7 @@ if [ ! -z "$1" ]; then
 			if [ ! -z "$_TRACK_ID" ]; then
 				spt play --uri "spotify:track:${_TRACK_ID}"
 			else
-				spt play $@
+				spt $@
 			fi;;
 		$(awk "/^(n{2,}|p{2,})$/" <<<${1}))
 			spt pb -$1;;
