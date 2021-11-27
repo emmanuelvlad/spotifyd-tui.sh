@@ -3,15 +3,16 @@
 die() { echo "$*" >&2; exit 2; }
 needs_arg() { if [ -z "$2" ]; then die "No arg for $1"; fi; }
 
-if [ ! $(pgrep "spotifyd") ]; then
-	nohup spotifyd --no-daemon &>/tmp/null &
+if [ ! "$(pgrep "spotifyd")" ]; then
+	nohup spotifyd --no-daemon >/tmp/null 2>&1 &
 fi
 
-function _CommandHelp() {
-	echo -e "\nSpotify script commands:"
+_CommandHelp() {
+	printf "\nSpotify script commands:"
 	echo "    t, toggle              Pause/Resume the song"
 	echo "    n, next [number]       Next song, can use \"nnnnnn\" instead of \"n 6\""
 	echo "    p, previous [number]   Previous song, can use \"ppp\" instead of \"p 3\""
+	echo "    v, volume <number>     Adjust volume"
 	echo "    shuffle                Toggles shuffle mode"
 	echo "    repeat                 Switches between repeat modes"
 	echo "    like                   Likes the current song if possible"
@@ -20,25 +21,31 @@ function _CommandHelp() {
 	echo "    link                   Prints the song url"
 	echo "    now                    Prints the status of the current song"
 	echo "    stop                   Stops the spotifyd daemon"
+	echo "    play <uri|name> [opts] Plays from a valid URI or calls \`spt\` to handle it"
 }
 
-function _repeatParam() {
-	if [ -z "${2//[0-9]}" ]; then
-		result=$(printf "%${2}s" ' ')
-		spt pb "-${result// /$1}"
+_repeatParam() {
+	if [ -z "$(printf "%s" "$2" | sed -r "s/[0-9]//g")" ]; then
+		_repeatedCommand=$(printf "%${2}s" " " | sed -r "s/ /$1/g")
+		spt pb "-${_repeatedCommand}"
 	else
 		die "Invalid argument for $1"
 	fi
 }
 
-function _getTrackID() {
-	_TRACK_ID=$(grep -m 1 -oP "track[:|/]\K([a-zA-Z0-9]{22})" <<< $1)
+_getURI() {
+	_sptfTypes="(track|album|episode|playlist|show)"
+	_matchedParam=$(echo "$1" | grep -m 1 -oP "${_sptfTypes}[:/][a-zA-Z0-9]{22}")
+	if [ -n "$_matchedParam" ]; then
+		_URI_ID=$(echo "$_matchedParam" | sed -r "s/(.*)[:\/]//g")
+		_URI_TYPE=$(echo "$_matchedParam" | sed -r "s/[:\/](.*)//g")
+	fi
 }
 
-if [ ! -z "$1" ]; then
+if [ -n "$1" ]; then
 	case "$1" in
 		-h | --help | help)
-			spt $@
+			spt "$@"
 			_CommandHelp;;
 		stop)
 			killall spotifyd;;
@@ -57,26 +64,26 @@ if [ ! -z "$1" ]; then
 		repeat)
 			spt pb --repeat;;
 		play)
-			_getTrackID $2
-			if [ ! -z "$_TRACK_ID" ]; then
-				spt play --uri "spotify:track:${_TRACK_ID}" ${@:3}
+			_getURI "$2"
+			if [ -n "$_URI_ID" ]; then
+				spt play --uri "spotify:${_URI_TYPE}:${_URI_ID}" $(echo "$@" | cut -d\  -f 3)
 			else
-				spt $@
+				spt "$@"
 			fi;;
-		$(awk "/^(n{2,}|p{2,})$/" <<<${1}))
-			spt pb -$1;;
+		"$(echo "$1" | awk "/^(n{2,}|p{2,})$/")")
+			spt pb "-$1";;
 		n | next)
-			_repeatParam n $2;;
+			_repeatParam n "$2";;
 		p | previous)
-			_repeatParam p $2;;
+			_repeatParam p "$2";;
 		v | volumne)
-			needs_arg "volume" $2;
-			spt pb -v $2;;
+			needs_arg "volume" "$2";
+			spt pb -v "$2";;
 		now)
 			spt pb -s;;
 		*)
-			spt $@;;
+			spt "$@";;
 	esac
 else
-	spt $@
+	spt "$@"
 fi

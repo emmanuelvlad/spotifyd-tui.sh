@@ -23,6 +23,7 @@ Add this in your $HOME/.zshrc or .bashrc
 sptf t, toggle              Pause/Resume the song  
 sptf n, next [number]       Next song, can use \"nnnnnn\" instead of \"n 6\"  
 sptf p, previous [number]   Previous song, can use \"ppp\" instead of \"p 3\"  
+sptf v, volumne <number>    Adjust volumne  
 sptf shuffle                Toggles shuffle mode  
 sptf repeat                 Switches between repeat modes  
 sptf like                   Likes the current song if possible  
